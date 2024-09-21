@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import com.example.demo.model.Medico;
 import com.example.demo.repository.MedicoRepository;
 
@@ -28,7 +29,7 @@ public class MedicoController {
         return repository.save(medico);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/medicos/{id}")
     public ResponseEntity<String> deletarMedico(@PathVariable String id) {
         if (!repository.existsById(id)) {
             return ResponseEntity.notFound().build();
