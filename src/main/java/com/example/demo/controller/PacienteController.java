@@ -26,7 +26,7 @@ public class PacienteController {
         return repository.save(paciente);
     }
 
-    @PutMapping("/pacientes")
+    @PutMapping
     public Paciente atualizarPaciente(@RequestBody Paciente paciente) {
         return repository.save(paciente);
     }

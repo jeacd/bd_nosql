@@ -10,5 +10,4 @@ import lombok.EqualsAndHashCode;
 @Document(indexName = "paciente")
 public class Paciente extends Pessoa {
     private String numeroSUS;
-    private String dataConsulta;
 }
