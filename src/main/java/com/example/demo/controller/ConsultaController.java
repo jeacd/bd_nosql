@@ -4,9 +4,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
 import com.example.demo.model.Consulta;
 import com.example.demo.model.Medico;
@@ -47,8 +49,6 @@ public class ConsultaController {
             Medico medicoSorteado = medicos.get(new Random().nextInt(medicos.size()));
             
             Consulta novaConsulta = new Consulta();
-            // novaConsulta.setPacienteId(paciente.getId());
-            // novaConsulta.setMedicoId(medicoSorteado.getId());
             novaConsulta.setNomePaciente(paciente.getNome());
             novaConsulta.setNomeMedico(medicoSorteado.getNome());
             novaConsulta.setDescricao(medicoSorteado.getEspecialidade());
@@ -62,19 +62,26 @@ public class ConsultaController {
             return ResponseEntity.status(500).body("Erro ao salvar a consulta: " + e.getMessage());
         }
     }
-    
+
     @GetMapping
-    public Iterable<Consulta> listarConsultas() {
-        return consultaRepository.findAll();
-    }    
+    public ResponseEntity<List<Consulta>> listarConsultas() {
+        Page<Consulta> pagina = (Page<Consulta>) consultaRepository.findAll();
+        List<Consulta> content = pagina.getContent();
+        
+        return ResponseEntity.ok(content);        
+    }
 
     @PutMapping
-    public Consulta atualizarMedico(@RequestBody Consulta consulta) {
-        return consultaRepository.save(consulta);
+    public ResponseEntity<String> atualizarConsulta(@RequestBody Consulta consulta) {
+        if (!consultaRepository.existsById(consulta.getId())) {
+            return ResponseEntity.notFound().build();
+        }
+        consultaRepository.save(consulta);
+        return ResponseEntity.ok("Atualização de dados realizada");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletarPaciente(@PathVariable String id) {
+    public ResponseEntity<String> deletarConsulta(@PathVariable String id) {
         if (!consultaRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }

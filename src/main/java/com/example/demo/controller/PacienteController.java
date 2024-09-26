@@ -1,12 +1,14 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.model.Paciente;
 import com.example.demo.repository.PacienteRepository;
-
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -17,18 +19,26 @@ public class PacienteController {
     private PacienteRepository repository;
 
     @GetMapping
-    public Iterable<Paciente> listarPacientes() {
-        return repository.findAll();
+    public ResponseEntity<List<Paciente>> listarPacientes() {
+        Page<Paciente> pagina = (Page<Paciente>) repository.findAll();
+        List<Paciente> content = pagina.getContent();
+        
+        return ResponseEntity.ok(content);        
     }
 
     @PostMapping
-    public Paciente adicionarPaciente(@RequestBody Paciente paciente) {
-        return repository.save(paciente);
+    public ResponseEntity<Paciente> adicionarPaciente(@RequestBody Paciente paciente) {
+        repository.save(paciente);
+        return ResponseEntity.ok(paciente);
     }
 
     @PutMapping
-    public Paciente atualizarPaciente(@RequestBody Paciente paciente) {
-        return repository.save(paciente);
+    public ResponseEntity<String> atualizarPaciente(@RequestBody Paciente paciente) {
+        if (!repository.existsById(paciente.getId())) {
+            return ResponseEntity.notFound().build();
+        }
+        repository.save(paciente);
+        return ResponseEntity.ok("Atualização de dados realizada");
     }
 
     @DeleteMapping("/{id}")

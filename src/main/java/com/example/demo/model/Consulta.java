@@ -19,7 +19,7 @@ public class Consulta {
     private String nomeMedico;
     private String nomePaciente;
 
-    private String descricao;  // Especialidade do médico
+    private String descricao;
 
     @Field(type = FieldType.Date)
     private LocalDate data;
